@@ -16,8 +16,8 @@ public class LiftDataReader {
         this.filePath = filePath;
     }
 
-    public void read(String filePath) {
-        try (BufferedReader csvFile = new BufferedReader(new FileReader(filePath))) {
+    private void read() {
+        try (BufferedReader csvFile = new BufferedReader(new FileReader(this.filePath))) {
             String titleLine = csvFile.readLine();
             String line = null;
             while ((line = csvFile.readLine()) != null) {
@@ -39,5 +39,12 @@ public class LiftDataReader {
         LiftData liftData = new LiftData(rawLiftData[0], Integer.parseInt(rawLiftData[1]),
                 rawLiftData[2], rawLiftData[3], rawLiftData[4]);
         return liftData;
+    }
+
+    public List<LiftData> getList(){
+        if (this.liftDataList.isEmpty()) {
+            this.read();
+        }
+        return this.liftDataList;
     }
 }

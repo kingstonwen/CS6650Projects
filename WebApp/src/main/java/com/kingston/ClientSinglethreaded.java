@@ -16,7 +16,7 @@ public class ClientSinglethreaded {
     Client client = ClientBuilder.newClient();
 
     long start = System.currentTimeMillis();
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10 ; i++) {
 //      WebTarget webTarget = client.target("http://localhost:8080/rest/home");
       WebTarget webTarget = client.target("http://52.91.183.56:8080/WebApp_war/rest/home");
 
