@@ -1,14 +1,14 @@
-package com.kingston.webApp.data;
+package com.kingston.webApp.dataEntity;
 
 
 public class SkierDayInfo {
 
     private String skierID;
     private Integer dayNum;
-    private Double totalVertical;
+    private Integer totalVertical;
     private Integer numOfLiftRides;
 
-    public SkierDayInfo(String skierID, Integer dayNum, Double totalVertical, Integer numOfLiftRides) {
+    public SkierDayInfo(String skierID, Integer dayNum, Integer totalVertical, Integer numOfLiftRides) {
         this.skierID = skierID;
         this.dayNum = dayNum;
         this.totalVertical = totalVertical;
@@ -34,11 +34,11 @@ public class SkierDayInfo {
         this.dayNum = dayNum;
     }
 
-    public Double getTotalVertical() {
+    public Integer getTotalVertical() {
         return totalVertical;
     }
 
-    public void setTotalVertical(Double totalVertical) {
+    public void setTotalVertical(Integer totalVertical) {
         this.totalVertical = totalVertical;
     }
 

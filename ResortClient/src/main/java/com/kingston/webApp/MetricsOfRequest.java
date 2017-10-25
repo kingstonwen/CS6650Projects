@@ -43,4 +43,8 @@ public class MetricsOfRequest {
         latenciesList.add(latency);
         totalLatencies.addAndGet(latency);
     }
+
+    public List<Long> getLatenciesList() {
+        return latenciesList;
+    }
 }

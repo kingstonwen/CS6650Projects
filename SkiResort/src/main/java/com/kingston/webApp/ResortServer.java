@@ -1,9 +1,9 @@
 package com.kingston.webApp;
 
-import com.kingston.webApp.data.LiftRide;
-import com.kingston.webApp.data.SkierDayInfo;
+import com.kingston.webApp.DAO.LiftRideDAO;
+import com.kingston.webApp.dataEntity.LiftRide;
+import com.kingston.webApp.dataEntity.SkierDayInfo;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -17,7 +17,7 @@ public class ResortServer {
         SkierDayInfo test = new SkierDayInfo();
         test.setDayNum(dayNum);
         test.setSkierID(skierId);
-        test.setTotalVertical(100.0);
+        test.setTotalVertical(100);
         test.setNumOfLiftRides(5);
         return test;
     }
@@ -27,6 +27,8 @@ public class ResortServer {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public LiftRide postLiftRideInfo(LiftRide liftRide) {
+        LiftRideDAO liftRideDAO = new LiftRideDAO();
+        liftRideDAO.save(liftRide);
         return liftRide;
     }
 

@@ -1,4 +1,4 @@
-package com.kingston.webApp.data;
+package com.kingston.webApp.dataEntity;
 
 public class LiftRide {
     private String resortID;

@@ -32,7 +32,7 @@ public class PostRequestTask implements Callable<MetricsOfRequest>{
     public MetricsOfRequest call() throws Exception {
         String targetUrl = ipAddress + ":" + portNum + requestPath;
 
-        Long start = System.currentTimeMillis();
+//        Long start = System.currentTimeMillis();
         Client client = ClientBuilder.newClient();
         for(LiftData data : this.liftDataList) {
             this.post(client, targetUrl, data);
@@ -50,9 +50,9 @@ public class PostRequestTask implements Callable<MetricsOfRequest>{
             Long latency = System.currentTimeMillis() - startTime;
             this.metrics.incrementNumOfRequestSent();
 
-//            if (response.getStatus() != HTTP_OK) {
-//                System.err.println(response.readEntity(String.class));
-//            }
+            if (response.getStatus() != HTTP_OK) {
+                System.err.println(response.readEntity(String.class));
+            }
 
             if (response.getStatus() == HTTP_OK) {
                 this.metrics.incrementNumOfSuccessfulRequestSent();
