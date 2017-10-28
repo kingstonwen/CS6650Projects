@@ -1,20 +1,20 @@
-package com.kingston.webApp.dataEntity;
+package com.kingston.webApp;
 
 
-public class SkierDayInfo {
+public class SkierDayData {
     private String skierID;
     private Integer dayNum;
     private Integer totalVertical;
     private Integer numOfLiftRides;
 
-    public SkierDayInfo(String skierID, Integer dayNum, Integer totalVertical, Integer numOfLiftRides) {
+    public SkierDayData(String skierID, Integer dayNum, Integer totalVertical, Integer numOfLiftRides) {
         this.skierID = skierID;
         this.dayNum = dayNum;
         this.totalVertical = totalVertical;
         this.numOfLiftRides = numOfLiftRides;
     }
 
-    public SkierDayInfo() {
+    public SkierDayData() {
     }
 
     public String getSkierID() {
@@ -47,5 +47,15 @@ public class SkierDayInfo {
 
     public void setNumOfLiftRides(Integer numOfLiftRides) {
         this.numOfLiftRides = numOfLiftRides;
+    }
+
+    @Override
+    public String toString() {
+        return "SkierDayData{" +
+                "skierID='" + skierID + '\'' +
+                ", dayNum=" + dayNum +
+                ", totalVertical=" + totalVertical +
+                ", numOfLiftRides=" + numOfLiftRides +
+                '}';
     }
 }

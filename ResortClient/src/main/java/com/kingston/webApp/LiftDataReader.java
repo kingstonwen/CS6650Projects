@@ -12,6 +12,8 @@ public class LiftDataReader {
     private final String filePath;
     private List<LiftData> liftDataList = new ArrayList<LiftData>();
 
+    private static final int[] verticals = {200, 300, 400, 500};
+
     public LiftDataReader(String filePath) {
         this.filePath = filePath;
     }
@@ -36,9 +38,16 @@ public class LiftDataReader {
     private LiftData createLiftData(String line) {
         line = line.trim();
         String[] rawLiftData = line.split(",");
+        String liftID = rawLiftData[3];
         LiftData liftData = new LiftData(rawLiftData[0], Integer.parseInt(rawLiftData[1]),
-                rawLiftData[2], rawLiftData[3], rawLiftData[4]);
+                rawLiftData[2], liftID, rawLiftData[4], liftIDToVertical(liftID));
         return liftData;
+    }
+
+    private Integer liftIDToVertical(String liftID) {
+        Integer liftIDNum = Integer.valueOf(liftID);
+        int liftVertical = verticals[(liftIDNum - 1) / 10];
+        return liftVertical;
     }
 
     public List<LiftData> getList(){

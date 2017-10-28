@@ -1,58 +1,71 @@
 package com.kingston.webApp;
 
+import com.google.gson.Gson;
+import com.sun.deploy.util.SessionState;
+
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-public class PostRequestTask implements Callable<MetricsOfRequest>{
+public class GetRequestTask implements Callable<MetricsOfRequest> {
 
     private String ipAddress;
     private String portNum;
     private String requestPath;
 
-    private List<LiftData> liftDataList;
+    private List<String> skierIDList;
+    private Integer dayNum;
     private MetricsOfRequest metrics;
 
-    public PostRequestTask(String ipAddress, String portNum, String requestPath, List<LiftData> liftDataList) {
+    private List<SkierDayData> skierDayDataList;
+
+    public GetRequestTask(String ipAddress, String portNum, String requestPath, List<String> skierIDList, Integer dayNum) {
         this.ipAddress = ipAddress;
         this.portNum = portNum;
         this.requestPath = requestPath;
-        this.liftDataList = liftDataList;
+        this.skierIDList = skierIDList;
+        this.dayNum = dayNum;
         metrics = new MetricsOfRequest();
+        skierDayDataList = Collections.synchronizedList(new ArrayList<>());
     }
 
     @Override
     public MetricsOfRequest call() throws Exception {
-        String targetUrl = ipAddress + ":" + portNum + requestPath;
-
         Client client = ClientBuilder.newClient();
-        for(LiftData data : this.liftDataList) {
-            this.post(client, targetUrl, data);
+        for(String skierId :skierIDList) {
+            this.get(client, skierId);
         }
         client.close();
         return this.metrics;
     }
 
-    private void post(Client client, String targetUrl, LiftData data) {
-        WebTarget webTarget = client.target(targetUrl);
+    private void get(Client client, String skier) {
+        String targetURL = ipAddress + ":" + portNum + requestPath + skier + "&" + dayNum;
+        WebTarget webTarget = client.target(targetURL);
         Response response = null;
-        try {
-            Long startTime = System.currentTimeMillis();
-            response = webTarget.request().post(Entity.json(data));
-            Long latency = System.currentTimeMillis() - startTime;
-            this.metrics.incrementNumOfRequestSent();
 
+        try {
+            Long start = System.currentTimeMillis();
+            response = webTarget.request().get();
+            Long latency = System.currentTimeMillis() - start;
             if (response.getStatus() != HTTP_OK) {
                 System.err.println(response.readEntity(String.class));
+            } else {
+                Gson gson = new Gson();
+                SkierDayData skierDayData = gson.fromJson(response.readEntity(String.class), SkierDayData.class);
+//                System.out.println(skierDayData.toString());
+                skierDayDataList.add(skierDayData);
             }
 
+            this.metrics.incrementNumOfRequestSent();
             if (response.getStatus() == HTTP_OK) {
                 this.metrics.incrementNumOfSuccessfulRequestSent();
             }
@@ -65,6 +78,5 @@ public class PostRequestTask implements Callable<MetricsOfRequest>{
                 response.close();
             }
         }
-
     }
 }

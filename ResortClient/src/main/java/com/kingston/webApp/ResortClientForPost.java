@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
 
-public class ResortClient {
+public class ResortClientForPost {
 
     public static final String TEST_CSV = "test.csv";
     public static final String DAY1_CSV = "BSDSAssignment2Day1.csv";
@@ -16,15 +16,16 @@ public class ResortClient {
     public static final String FILE_AWS_POST_PATH = "/SkiResort/rest/load";
 
     public static void main(String[] args) throws Exception{
-        Boolean ifTesting = true;
+        Boolean ifTesting = false;
         String IPAddress = ifTesting ? LOCAL_HOST_PROTOCAL : AWS_EC2_PROTOCAL;
         String postRequestPath = ifTesting ? FILE_LOCAL_POST_PATH : FILE_AWS_POST_PATH;
         String portNum = PORT_NUMBER;
 
-        LiftDataReader reader = new LiftDataReader(TEST_CSV);
+        LiftDataReader reader = new LiftDataReader(DAY1_CSV);
         List<LiftData> liftDataList = reader.getList();
-        int numOfThreads = 100;
+        System.out.println("Finishing importing csv file.");
 
+        int numOfThreads = 200;
         int dataSize = liftDataList.size();
         int requestPerThread = dataSize / numOfThreads;
 

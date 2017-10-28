@@ -11,7 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ResortServer" target="1.5" />
+      <module name="ResortServer" target="1.8" />
       <module name="SkiResort" target="1.5" />
     </bytecodeTargetLevel>
   </component>

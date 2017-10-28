@@ -1,21 +1,34 @@
 package com.kingston.webApp.dataEntity;
 
 public class LiftRide {
+    private Long id;
     private String resortID;
     private Integer dayNum;
     private String timeStamp;
     private String skierID;
     private String liftID;
+    private Integer vertical;
 
-    public LiftRide(String resortID, Integer dayNum, String timeStamp, String skierID, String liftID) {
+//    private static final int[] verticals = {200, 300, 400, 500};
+
+    public LiftRide(String resortID, Integer dayNum, String timeStamp, String skierID, String liftID, Integer vertical) {
         this.resortID = resortID;
         this.dayNum = dayNum;
         this.timeStamp = timeStamp;
         this.skierID = skierID;
         this.liftID = liftID;
+        this.vertical = vertical;
     }
 
     public LiftRide() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getResortID() {
@@ -57,6 +70,20 @@ public class LiftRide {
     public void setLiftID(String liftID) {
         this.liftID = liftID;
     }
+
+    public Integer getVertical() {
+        return vertical;
+    }
+
+    public void setVertical(Integer vertical) {
+        this.vertical = vertical;
+    }
+
+    //    private void setVertical(String liftID) {
+//        Integer liftIDNum = Integer.valueOf(liftID);
+//        int liftVertical = verticals[(liftIDNum - 1) / 10];
+//        this.vertical = liftVertical;
+//    }
 
     @Override
     public String toString() {

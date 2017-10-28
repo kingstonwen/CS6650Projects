@@ -1,11 +1,13 @@
 package com.kingston.webApp;
 
 import com.kingston.webApp.DAO.LiftRideDAO;
+import com.kingston.webApp.DAO.SkierDayInfoDao;
 import com.kingston.webApp.dataEntity.LiftRide;
 import com.kingston.webApp.dataEntity.SkierDayInfo;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.sql.SQLException;
 
 @Path("/")
 public class ResortServer {
@@ -14,12 +16,8 @@ public class ResortServer {
     @Path("myvert/{skierID}&{dayNum}")
     @Produces(MediaType.APPLICATION_JSON)
     public SkierDayInfo getSkierDayInfo(@PathParam("skierID") String skierId, @PathParam("dayNum") Integer dayNum) {
-        SkierDayInfo test = new SkierDayInfo();
-        test.setDayNum(dayNum);
-        test.setSkierID(skierId);
-        test.setTotalVertical(100);
-        test.setNumOfLiftRides(5);
-        return test;
+        SkierDayInfoDao skierDayInfoDao = new SkierDayInfoDao();
+        return skierDayInfoDao.getSkierDayInfo(skierId, dayNum);
     }
 
     @POST
@@ -28,9 +26,21 @@ public class ResortServer {
     @Produces(MediaType.APPLICATION_JSON)
     public LiftRide postLiftRideInfo(LiftRide liftRide) {
         LiftRideDAO liftRideDAO = new LiftRideDAO();
-        liftRideDAO.save(liftRide);
+        try {
+            liftRideDAO.save(liftRide);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return liftRide;
     }
+
+    @DELETE
+    @Path("lift/deleteAllByDay/{dayNum}")
+    public void deleteAllByDay(@PathParam("dayNum") Integer dayNum) {
+        LiftRideDAO liftRideDAO = new LiftRideDAO();
+        liftRideDAO.deleteAllByDay(dayNum);
+    }
+
 
     @Path("home")
     @GET
@@ -45,5 +55,4 @@ public class ResortServer {
     public int postText(String content) {
         return content.length();
     }
-
 }

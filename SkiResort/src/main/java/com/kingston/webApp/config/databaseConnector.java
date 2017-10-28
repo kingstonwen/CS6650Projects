@@ -2,44 +2,53 @@ package com.kingston.webApp.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class databaseConnector {
+public class DatabaseConnector {
 
-    private static final String urlTemplete = "jdbc:postgresql://%s:%s/%s";
-    private static final String databaseHost = "skiresortdb.cd5eiatsdlfp.us-west-2.rds.amazonaws.com";
-    private static final String port = "5432";
-    private static final String databaseName = "SkiResortDB";
-    private static final String username = "kingstonwen";
-    private static final String password = "Wszat4244";
+    private final String urlTemplete = "jdbc:postgresql://%s:%s/%s";
+    private final String databaseHost = "skiresortdb.cd5eiatsdlfp.us-west-2.rds.amazonaws.com";
+    private final String port = "5432";
+    private final String databaseName = "SkiResortDB";
+    private final String username = "kingstonwen";
+    private final String password = "Wszat4244";
 
-    public Connection connect() {
-        Connection connection = null;
-        String url = String.format(urlTemplete, databaseHost, port, databaseName);
-        try {
-            connection = DriverManager.getConnection(url, username, password);
-            System.out.println("Connected to the PostgreSQL server successfully.");
-            System.out.println(connection.getMetaData());
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+    private static DatabaseConnector instance;
 
-        return connection;
+    public DatabaseConnector() {
     }
 
-    public void closeConnection(Connection connection) {
+    public static DatabaseConnector getInstance(){
+        if (instance == null) {
+            instance = new DatabaseConnector();
+        }
+        return instance;
+
+    }
+
+    public Connection getConnection() {
+        Connection database = null;
         try {
-            connection.close();
-        } catch (SQLException e) {
+            Class.forName("org.postgresql.Driver");
+            try {
+                String url = String.format(urlTemplete, databaseHost, port, databaseName);
+                database = DriverManager.getConnection(url, username, password);
+                if (database != null) {
+                    System.out.println("Connected to the PostgreSQL server successfully.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return database;
     }
 
-    public static void main(String[] args) {
-        databaseConnector connector = new databaseConnector();
-        Connection connection = connector.connect();
-//        String test = "INSERT INTO lift_ride(resortid, daynum, time, skierid, liftid) VALUES(?, ?, ?, ?, ?)";
+//    public static void main(String[] args){
+//        DatabaseConnector connector = new DatabaseConnector();
+//        Connection connection = connector.getConnection();
+//        String test = "INSERT INTO lift_ride(resortid, daynum, timestamp, skierid, liftid) VALUES(?, ?, ?, ?, ?)";
 //        try {
 //            PreparedStatement preparedStatement = connection.prepareStatement(test);
 //            preparedStatement.setString(1, "r12");
@@ -52,6 +61,12 @@ public class databaseConnector {
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }
-    }
 
+//        try (Connection connection = connector.getConnection()){
+//            connection.close();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 }
