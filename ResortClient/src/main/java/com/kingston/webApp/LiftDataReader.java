@@ -40,7 +40,7 @@ public class LiftDataReader {
         String[] rawLiftData = line.split(",");
         String liftID = rawLiftData[3];
         LiftData liftData = new LiftData(rawLiftData[0], Integer.parseInt(rawLiftData[1]),
-                rawLiftData[2], liftID, rawLiftData[4], liftIDToVertical(liftID));
+                rawLiftData[2], liftID, rawLiftData[4]);
         return liftData;
     }
 

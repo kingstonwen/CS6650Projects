@@ -7,15 +7,15 @@ public class LiftData {
     private String skierID;
     private String liftID;
     private String timeStamp;
-    private Integer vertical;
+//    private Integer vertical;
 
-    public LiftData(String resortID, Integer dayNum, String skierID, String liftID, String timeStamp, Integer vertical) {
+    public LiftData(String resortID, Integer dayNum, String skierID, String liftID, String timeStamp) {
         this.resortID = resortID;
         this.dayNum = dayNum;
         this.skierID = skierID;
         this.liftID = liftID;
         this.timeStamp = timeStamp;
-        this.vertical = vertical;
+//        this.vertical = vertical;
     }
 
     public LiftData() {
@@ -61,11 +61,11 @@ public class LiftData {
         this.timeStamp = timeStamp;
     }
 
-    public Integer getVertical() {
-        return vertical;
-    }
-
-    public void setVertical(Integer vertical) {
-        this.vertical = vertical;
-    }
+//    public Integer getVertical() {
+//        return vertical;
+//    }
+//
+//    public void setVertical(Integer vertical) {
+//        this.vertical = vertical;
+//    }
 }

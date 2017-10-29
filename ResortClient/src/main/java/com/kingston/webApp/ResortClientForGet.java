@@ -21,7 +21,7 @@ public class ResortClientForGet {
         String portNum = PORT_NUMBER;
         Integer dayNum = 1;
 
-        LiftDataReader reader = new LiftDataReader(TEST_CSV);
+        LiftDataReader reader = new LiftDataReader(DAY1_CSV);
         List<LiftData> liftDataList = reader.getList();
         Set<String> skierIDSet = new HashSet<>();
         for(LiftData liftData : liftDataList) {
@@ -29,7 +29,7 @@ public class ResortClientForGet {
         }
         List<String> skierIDList = new ArrayList<>(skierIDSet);
         System.out.println("Finishing reading all skierID");
-        int numOfThreads = 50;
+        int numOfThreads = 150;
         System.out.println("There are " + numOfThreads + " threads.");
         int dataSize = skierIDList.size();
         System.out.println("There are " + dataSize + " skierIDs.");

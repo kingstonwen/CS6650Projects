@@ -47,8 +47,8 @@ public class GetRequestTask implements Callable<MetricsOfRequest> {
         return this.metrics;
     }
 
-    private void get(Client client, String skier) {
-        String targetURL = ipAddress + ":" + portNum + requestPath + skier + "&" + dayNum;
+    private void get(Client client, String skierID) {
+        String targetURL = ipAddress + ":" + portNum + requestPath + skierID + "&" + dayNum;
         WebTarget webTarget = client.target(targetURL);
         Response response = null;
 
@@ -56,9 +56,11 @@ public class GetRequestTask implements Callable<MetricsOfRequest> {
             Long start = System.currentTimeMillis();
             response = webTarget.request().get();
             Long latency = System.currentTimeMillis() - start;
-            if (response.getStatus() != HTTP_OK) {
-                System.err.println(response.readEntity(String.class));
-            } else {
+//            if (response.getStatus() != HTTP_OK) {
+//                System.out.println(response.readEntity(String.class));
+//            }
+
+            if (response.getStatus() == HTTP_OK) {
                 Gson gson = new Gson();
                 SkierDayData skierDayData = gson.fromJson(response.readEntity(String.class), SkierDayData.class);
 //                System.out.println(skierDayData.toString());

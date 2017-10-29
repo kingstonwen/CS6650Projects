@@ -7,17 +7,17 @@ public class LiftRide {
     private String timeStamp;
     private String skierID;
     private String liftID;
-    private Integer vertical;
+//    private Integer vertical;
 
-//    private static final int[] verticals = {200, 300, 400, 500};
+    private static final int[] verticals = {200, 300, 400, 500};
 
-    public LiftRide(String resortID, Integer dayNum, String timeStamp, String skierID, String liftID, Integer vertical) {
+    public LiftRide(String resortID, Integer dayNum, String timeStamp, String skierID, String liftID) {
         this.resortID = resortID;
         this.dayNum = dayNum;
         this.timeStamp = timeStamp;
         this.skierID = skierID;
         this.liftID = liftID;
-        this.vertical = vertical;
+//        this.vertical = vertical;
     }
 
     public LiftRide() {
@@ -71,19 +71,19 @@ public class LiftRide {
         this.liftID = liftID;
     }
 
-    public Integer getVertical() {
-        return vertical;
-    }
-
-    public void setVertical(Integer vertical) {
-        this.vertical = vertical;
-    }
-
-    //    private void setVertical(String liftID) {
-//        Integer liftIDNum = Integer.valueOf(liftID);
-//        int liftVertical = verticals[(liftIDNum - 1) / 10];
-//        this.vertical = liftVertical;
+//    public Integer getVertical() {
+//        return vertical;
 //    }
+//
+//    public void setVertical(Integer vertical) {
+//        this.vertical = vertical;
+//    }
+
+    public static int getVerticalByLiftId(String liftID) {
+        Integer liftIDNum = Integer.valueOf(liftID);
+        int liftVertical = verticals[(liftIDNum - 1) / 10];
+        return liftVertical;
+    }
 
     @Override
     public String toString() {

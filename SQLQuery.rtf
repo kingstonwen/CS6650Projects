@@ -6,15 +6,16 @@
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0\fs24 \cf0 DROP TABLE IF EXISTS SKIER_DAY_INFO;\
-DROP TABLE IF EXISTS LIFT_RIDE;\
 \
 CREATE TABLE SKIER_DAY_INFO(\
-    skierID INT NOT NULL,\
+    skierID varchar(20) NOT NULL,\
     dayNum INT NOT NULL,\
     totalVertical INT NOT NULL,\
-    numOfLiftRides INT NOT NULL,\
+    numOfLift INT NOT NULL,\
     PRIMARY KEY (skierID, dayNum)\
 );\
+\
+DROP TABLE IF EXISTS LIFT_RIDE;\
 \
 CREATE TABLE LIFT_RIDE(\
 	id serial PRIMARY KEY,\
@@ -26,4 +27,7 @@ CREATE TABLE LIFT_RIDE(\
     vertical INT NOT NULL\
 );\
 \
-INSERT INTO lift_ride(resortid, daynum, time, skierid, liftid) VALUES ('r1', 1, 1, 12, 12);}
+INSERT INTO lift_ride(resortid, daynum, time, skierid, liftid) VALUES ('r1', 1, 1, 12, 12);\
+\
+INSERT INFO skier_day_info(skierID, dayNum, totalVertical, numOfLiftRides) VALUES(?,?,?,?) ON \
+CONFLICT (skierID, dayNum) DO UPDATE SET numOfLiftRides = skier_day_info.numOfLiftRides + 1, totalVertical = skier_day-info.totalVertical + ?;}

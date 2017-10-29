@@ -21,11 +21,11 @@ public class ResortClientForPost {
         String postRequestPath = ifTesting ? FILE_LOCAL_POST_PATH : FILE_AWS_POST_PATH;
         String portNum = PORT_NUMBER;
 
-        LiftDataReader reader = new LiftDataReader(DAY1_CSV);
+        LiftDataReader reader = new LiftDataReader(TEST_CSV);
         List<LiftData> liftDataList = reader.getList();
         System.out.println("Finishing importing csv file.");
 
-        int numOfThreads = 200;
+        int numOfThreads = 30;
         int dataSize = liftDataList.size();
         int requestPerThread = dataSize / numOfThreads;
 
@@ -44,7 +44,7 @@ public class ResortClientForPost {
 
         ExecutorService executorService = Executors.newFixedThreadPool(numOfThreads);
 
-        System.out.println("Client service is starting ...");
+        System.out.println("Client POST service is starting ...");
 
         Long startTime = System.currentTimeMillis();
         List<Future<MetricsOfRequest>> futureList = executorService.invokeAll(postRequestTaskList);
@@ -52,7 +52,7 @@ public class ResortClientForPost {
         executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         Long endingTime = System.currentTimeMillis();
 
-        System.out.println("Client service is wrapping up ...");
+        System.out.println("Client POST service is wrapping up ...");
 
         StatReport statReport = new StatReport();
         for(Future<MetricsOfRequest> future : futureList) {

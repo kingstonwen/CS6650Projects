@@ -1,16 +1,24 @@
 package com.kingston.webApp.DAO;
 
 import com.kingston.webApp.config.DatabaseConnector;
+import com.kingston.webApp.dataEntity.LiftRide;
 import com.kingston.webApp.dataEntity.SkierDayInfo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class SkierDayInfoDao {
-    private static final String VERTICAL_AND_LIFT_NUM =
-            "SELECT SUM(vertical), COUNT(liftid) FROM lift_ride WHERE skierid = ? AND dayNum = ?" ;
+    private static final String GET_VERTICAL_AND_LIFT_NUM =
+            "SELECT totalvertical,numoflift FROM skier_day_info WHERE skierid = ? AND daynum = ?" ;
+
+    private static final String UPDATE =
+            "INSERT INTO skier_day_info(skierid, daynum, totalvertical, numoflift) VALUES (?, ?, ?, ?)\n" +
+                    "ON CONFLICT (skierid, daynum) DO UPDATE SET\n" +
+                    "totalvertical = skier_day_info.totalvertical + EXCLUDED.totalvertical,\n" +
+                    "numoflift = skier_day_info.numoflift + EXCLUDED.numoflift";
 
     private DatabaseConnector databaseConnector;
 
@@ -18,7 +26,60 @@ public class SkierDayInfoDao {
         this.databaseConnector = DatabaseConnector.getInstance();
     }
 
-    public SkierDayInfo getSkierDayInfo(String skierID, Integer dayNum) {
+    public void updateSkierDayInfo(LiftRide liftRide) {
+        try (Connection database = databaseConnector.getConnection()){
+            if (database == null) {
+                throw new SQLException();
+            }
+            PreparedStatement preparedStatement = null;
+            try {
+                preparedStatement = database.prepareStatement(UPDATE);
+                preparedStatement.setString(1, liftRide.getSkierID());
+                preparedStatement.setInt(2, liftRide.getDayNum());
+                preparedStatement.setInt(3, LiftRide.getVerticalByLiftId(liftRide.getLiftID()));
+                preparedStatement.setInt(4, 1);
+                preparedStatement.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateAllSkierDayInfo(List<LiftRide> liftRideList) {
+        try (Connection database = databaseConnector.getConnection()){
+            if (database == null) {
+                throw new SQLException();
+            }
+            PreparedStatement preparedStatement = null;
+            try {
+                preparedStatement = database.prepareStatement(UPDATE);
+                for(LiftRide liftRide : liftRideList) {
+                    preparedStatement.setString(1, liftRide.getSkierID());
+                    preparedStatement.setInt(2, liftRide.getDayNum());
+                    preparedStatement.setInt(3, LiftRide.getVerticalByLiftId(liftRide.getLiftID()));
+                    preparedStatement.setInt(4, 1);
+                    preparedStatement.addBatch();
+                }
+                preparedStatement.executeBatch();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public SkierDayInfo getBySkierIDAndDayNum(String skierID, Integer dayNum) {
         SkierDayInfo skierDayInfo = null;
         try (Connection database = databaseConnector.getConnection()){
             if (database == null) {
@@ -26,13 +87,13 @@ public class SkierDayInfoDao {
             }
             PreparedStatement preparedStatement = null;
             try {
-                preparedStatement = database.prepareStatement(VERTICAL_AND_LIFT_NUM);
+                preparedStatement = database.prepareStatement(GET_VERTICAL_AND_LIFT_NUM);
                 preparedStatement.setString(1, skierID);
                 preparedStatement.setInt(2, dayNum);
                 try(ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        Integer totalVertical = resultSet.getInt("sum");
-                        Integer numOfLift = resultSet.getInt("count");
+                        Integer totalVertical = resultSet.getInt("totalvertical");
+                        Integer numOfLift = resultSet.getInt("numoflift");
                         skierDayInfo = new SkierDayInfo(skierID, dayNum, totalVertical, numOfLift);
                     }
                 } catch (SQLException e) {
@@ -41,7 +102,9 @@ public class SkierDayInfoDao {
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
-                preparedStatement.close();
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

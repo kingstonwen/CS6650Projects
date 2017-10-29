@@ -2,6 +2,7 @@ package com.kingston.webApp;
 
 import com.kingston.webApp.DAO.LiftRideDAO;
 import com.kingston.webApp.DAO.SkierDayInfoDao;
+import com.kingston.webApp.cache.PostRequestCache;
 import com.kingston.webApp.dataEntity.LiftRide;
 import com.kingston.webApp.dataEntity.SkierDayInfo;
 
@@ -17,7 +18,7 @@ public class ResortServer {
     @Produces(MediaType.APPLICATION_JSON)
     public SkierDayInfo getSkierDayInfo(@PathParam("skierID") String skierId, @PathParam("dayNum") Integer dayNum) {
         SkierDayInfoDao skierDayInfoDao = new SkierDayInfoDao();
-        return skierDayInfoDao.getSkierDayInfo(skierId, dayNum);
+        return skierDayInfoDao.getBySkierIDAndDayNum(skierId, dayNum);
     }
 
     @POST
@@ -25,12 +26,16 @@ public class ResortServer {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public LiftRide postLiftRideInfo(LiftRide liftRide) {
-        LiftRideDAO liftRideDAO = new LiftRideDAO();
-        try {
-            liftRideDAO.save(liftRide);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        LiftRideDAO liftRideDAO = new LiftRideDAO();
+//        SkierDayInfoDao skierDayInfoDao = new SkierDayInfoDao();
+//        try {
+//            liftRideDAO.save(liftRide);
+//            skierDayInfoDao.updateSkierDayInfo(liftRide);
+            PostRequestCache postRequestCache = new PostRequestCache();
+            postRequestCache.add(liftRide);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
         return liftRide;
     }
 

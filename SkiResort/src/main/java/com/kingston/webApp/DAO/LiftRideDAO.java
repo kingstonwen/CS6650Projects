@@ -6,11 +6,12 @@ import com.kingston.webApp.dataEntity.LiftRide;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 public class LiftRideDAO {
 
     private static final String INSERT_QUERY =
-            "INSERT INTO lift_ride(resortid, daynum, timestamp, skierid, liftid, vertical) VALUES(?, ?, ?, ?, ?, ?)";
+            "INSERT INTO lift_ride(resortid, daynum, timestamp, skierid, liftid) VALUES(?, ?, ?, ?, ?)";
 
     private static final String DELETE_ALL = "DELETE FROM lift_ride WHERE daynum = ?";
 
@@ -20,7 +21,7 @@ public class LiftRideDAO {
         databaseConnector = DatabaseConnector.getInstance();
     }
 
-    public void save(LiftRide liftRide) throws SQLException{
+    public void save(LiftRide liftRide) {
         try (Connection database = databaseConnector.getConnection()){
             if (database == null) {
                 throw new SQLException();
@@ -33,8 +34,37 @@ public class LiftRideDAO {
                 preparedStatement.setString(3, liftRide.getTimeStamp());
                 preparedStatement.setString(4, liftRide.getSkierID());
                 preparedStatement.setString(5, liftRide.getLiftID());
-                preparedStatement.setInt(6, liftRide.getVertical());
+//                preparedStatement.setInt(6, liftRide.getVertical());
                 preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveAll(List<LiftRide> liftRideList) {
+        try (Connection database = databaseConnector.getConnection()){
+            if (database == null) {
+                throw new SQLException();
+            }
+            PreparedStatement preparedStatement = null;
+            try {
+                preparedStatement = database.prepareStatement(INSERT_QUERY);
+                for(LiftRide liftRide : liftRideList) {
+                    preparedStatement.setString(1, liftRide.getResortID());
+                    preparedStatement.setInt(2, liftRide.getDayNum());
+                    preparedStatement.setString(3, liftRide.getTimeStamp());
+                    preparedStatement.setString(4, liftRide.getSkierID());
+                    preparedStatement.setString(5, liftRide.getLiftID());
+                    preparedStatement.addBatch();
+                }
+                preparedStatement.executeBatch();
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
@@ -56,6 +86,10 @@ public class LiftRideDAO {
                 preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
+            } finally {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
