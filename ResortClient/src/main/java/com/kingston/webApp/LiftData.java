@@ -15,7 +15,10 @@ public class LiftData {
         this.skierID = skierID;
         this.liftID = liftID;
         this.timeStamp = timeStamp;
-//        this.vertical = vertical;
+    }
+
+    public LiftData(String timeStamp){
+        this.timeStamp = timeStamp;
     }
 
     public LiftData() {

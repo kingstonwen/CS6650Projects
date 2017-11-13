@@ -5,12 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class LiftDataReader {
 
     private final String filePath;
-    private List<LiftData> liftDataList = new ArrayList<LiftData>();
+//    private List<LiftData> liftDataList = Collections.synchronizedList(new ArrayList<>());
+    private List<LiftData> liftDataList = new ArrayList<>();
 
     private static final int[] verticals = {200, 300, 400, 500};
 
@@ -54,6 +57,8 @@ public class LiftDataReader {
         if (this.liftDataList.isEmpty()) {
             this.read();
         }
+        //add a end of csv file signal so that the cache on server know when to send cache all out
+//        this.liftDataList.add(new LiftData("0"));
         return this.liftDataList;
     }
 }

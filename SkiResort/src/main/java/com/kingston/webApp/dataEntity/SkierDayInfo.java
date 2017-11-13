@@ -48,4 +48,9 @@ public class SkierDayInfo {
     public void setNumOfLiftRides(Integer numOfLiftRides) {
         this.numOfLiftRides = numOfLiftRides;
     }
+
+    public void update(Integer vertical) {
+        this.totalVertical += vertical;
+        this.numOfLiftRides++;
+    }
 }

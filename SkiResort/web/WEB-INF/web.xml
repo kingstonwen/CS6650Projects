@@ -16,4 +16,8 @@
         <servlet-name>SkiResortWebApp</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
+
+    <!--<listener>-->
+        <!--<listener-class>com.kingston.webApp.cache.CacheContextListener</listener-class>-->
+    <!--</listener>-->
 </web-app>

@@ -34,7 +34,6 @@ public class LiftRideDAO {
                 preparedStatement.setString(3, liftRide.getTimeStamp());
                 preparedStatement.setString(4, liftRide.getSkierID());
                 preparedStatement.setString(5, liftRide.getLiftID());
-//                preparedStatement.setInt(6, liftRide.getVertical());
                 preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -48,7 +47,7 @@ public class LiftRideDAO {
         }
     }
 
-    public void saveAll(List<LiftRide> liftRideList) {
+    public void batchInsert(List<LiftRide> liftRideList) {
         try (Connection database = databaseConnector.getConnection()){
             if (database == null) {
                 throw new SQLException();

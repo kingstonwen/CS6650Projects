@@ -20,6 +20,9 @@ public class SkierDayInfoDao {
                     "totalvertical = skier_day_info.totalvertical + EXCLUDED.totalvertical,\n" +
                     "numoflift = skier_day_info.numoflift + EXCLUDED.numoflift";
 
+    private static final String INSERT =
+            "INSERT INTO skier_day_info(skierid, daynum, totalvertical, numoflift) VALUES (?, ?, ?, ?)";
+
     private DatabaseConnector databaseConnector;
 
     public SkierDayInfoDao() {
@@ -39,6 +42,34 @@ public class SkierDayInfoDao {
                 preparedStatement.setInt(3, LiftRide.getVerticalByLiftId(liftRide.getLiftID()));
                 preparedStatement.setInt(4, 1);
                 preparedStatement.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void batchUpdateSkierDayInfo(List<SkierDayInfo> skierDayInfoList) {
+        try (Connection database = databaseConnector.getConnection()){
+            if (database == null) {
+                throw new SQLException();
+            }
+            PreparedStatement preparedStatement = null;
+            try {
+                preparedStatement = database.prepareStatement(UPDATE);
+                for(SkierDayInfo skierDayInfo : skierDayInfoList) {
+                    preparedStatement.setString(1, skierDayInfo.getSkierID());
+                    preparedStatement.setInt(2, skierDayInfo.getDayNum());
+                    preparedStatement.setInt(3, skierDayInfo.getTotalVertical());
+                    preparedStatement.setInt(4, skierDayInfo.getNumOfLiftRides());
+                    preparedStatement.addBatch();
+                }
+                preparedStatement.executeBatch();
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {

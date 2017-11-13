@@ -49,9 +49,9 @@ public class PostRequestTask implements Callable<MetricsOfRequest>{
             Long latency = System.currentTimeMillis() - startTime;
             this.metrics.incrementNumOfRequestSent();
 
-            if (response.getStatus() != HTTP_OK) {
-                System.err.println(response.readEntity(String.class));
-            }
+//            if (response.getStatus() != HTTP_OK) {
+//                System.err.println(response.readEntity(String.class));
+//            }
 
             if (response.getStatus() == HTTP_OK) {
                 this.metrics.incrementNumOfSuccessfulRequestSent();

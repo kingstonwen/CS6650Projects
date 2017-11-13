@@ -2,16 +2,21 @@ package com.kingston.webApp;
 
 import com.kingston.webApp.DAO.LiftRideDAO;
 import com.kingston.webApp.DAO.SkierDayInfoDao;
+import com.kingston.webApp.cache.LiftRideCache;
 import com.kingston.webApp.cache.PostRequestCache;
+import com.kingston.webApp.cache.SkierDayCache;
 import com.kingston.webApp.dataEntity.LiftRide;
 import com.kingston.webApp.dataEntity.SkierDayInfo;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.sql.SQLException;
 
 @Path("/")
 public class ResortServer {
+
+//    @Context
+//    ServletContext servletContext;
 
     @GET
     @Path("myvert/{skierID}&{dayNum}")
@@ -31,13 +36,21 @@ public class ResortServer {
 //        try {
 //            liftRideDAO.save(liftRide);
 //            skierDayInfoDao.updateSkierDayInfo(liftRide);
-            PostRequestCache postRequestCache = new PostRequestCache();
-            postRequestCache.add(liftRide);
+            PostRequestCache.getInstance().add(liftRide);
+//            postRequestCache.add(liftRide);
+            return liftRide;
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }
-        return liftRide;
     }
+
+//    private LiftRide postLiftWithCache(LiftRide liftRide) {
+//        LiftRideCache liftRideCache = (LiftRideCache) servletContext.getAttribute("LiftRideCache");
+//        liftRideCache.addLift(liftRide);
+//        SkierDayCache skierDayCache = (SkierDayCache) servletContext.getAttribute("SkierDayCache");
+//        skierDayCache.addLift(liftRide);
+//        return liftRide;
+//    }
 
     @DELETE
     @Path("lift/deleteAllByDay/{dayNum}")
