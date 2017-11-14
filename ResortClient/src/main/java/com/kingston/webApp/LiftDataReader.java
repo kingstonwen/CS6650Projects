@@ -12,8 +12,8 @@ import java.util.List;
 public class LiftDataReader {
 
     private final String filePath;
-//    private List<LiftData> liftDataList = Collections.synchronizedList(new ArrayList<>());
-    private List<LiftData> liftDataList = new ArrayList<>();
+    private List<LiftData> liftDataList = Collections.synchronizedList(new ArrayList<>());
+//    private List<LiftData> liftDataList = new ArrayList<>();
 
     private static final int[] verticals = {200, 300, 400, 500};
 

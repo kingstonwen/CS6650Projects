@@ -27,7 +27,7 @@ public class ResortClientForPost {
         String IPAddress = ifTesting ? LOCAL_HOST_PROTOCAL : AWS_EC2_PROTOCAL;
         String postRequestPath = ifTesting ? FILE_LOCAL_POST_PATH : FILE_AWS_POST_PATH;
         String portNum = PORT_NUMBER;
-        int numOfThreads = 200;
+        int numOfThreads = 150;
         String importFile = DAY1_CSV;
 
         LiftDataReader reader = new LiftDataReader(importFile);
@@ -36,6 +36,7 @@ public class ResortClientForPost {
 
         System.out.println("There are " + numOfThreads + " threads.");
         int dataSize = liftDataList.size();
+        System.out.println("There are " + dataSize + " lifts record in " + importFile + ".");
         int requestPerThread = dataSize / numOfThreads;
 
         List<Callable<MetricsOfRequest>> postRequestTaskList = Collections.synchronizedList(new ArrayList<>());

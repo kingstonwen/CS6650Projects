@@ -21,7 +21,7 @@ public class ResortClientForGet {
         String getRequestPath = ifTesting ? FILE_LOCAL_GET_PATH : FILE_AWS_GET_PATH;
         String portNum = PORT_NUMBER;
         String CSVFile = DAY1_CSV;
-        int numOfThreads = 100;
+        int numOfThreads = 80;
         Integer dayNum = 1;
 
         LiftDataReader reader = new LiftDataReader(CSVFile);

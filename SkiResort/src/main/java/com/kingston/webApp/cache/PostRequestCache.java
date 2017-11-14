@@ -6,39 +6,51 @@ import com.kingston.webApp.dataEntity.LiftRide;
 import com.kingston.webApp.dataEntity.SkierDayInfo;
 
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PostRequestCache {
 
+    public static final String END_OF_REQUEST = "0";
     private static PostRequestCache instance;
 
-    private List<LiftRide> liftRideList = Collections.synchronizedList(new LinkedList<>());
-//    private List<LiftRide> liftRideList = new LinkedList<>();
-//    private static BlockingQueue<LiftRide> liftRideList = new ArrayBlockingQueue<>(500);
+//    private List<LiftRide> liftRideList = Collections.synchronizedList(new LinkedList<>());
+    private List<LiftRide> liftRideList = new LinkedList<>();
+//    private List<LiftRide> liftRideList = new CopyOnWriteArrayList<>();
+//    private static BlockingQueue<LiftRide> liftRideList = new ArrayBlockingQueue<>(1000);
 
-    private Map<String, SkierDayInfo> skierDayCacheMap = Collections.synchronizedMap(new HashMap<>());
-//    private Map<String, SkierDayInfo> skierDayCacheMap = new HashMap<>();
+//    private Map<String, SkierDayInfo> skierDayCacheMap = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, SkierDayInfo> skierDayCacheMap = new ConcurrentHashMap<>();
 
     public static PostRequestCache getInstance(){
         if (instance == null) {
             instance = new PostRequestCache();
         }
+
         return instance;
 
     }
 
+    private boolean ifEndOfRequestInADay(LiftRide liftRide) {
+        return liftRide.getTimeStamp().equals(END_OF_REQUEST);
+    }
+
     public synchronized void add(LiftRide liftRide) {
-        if (liftRide.getTimeStamp().equals("0")) {
+        if (ifEndOfRequestInADay(liftRide)) {
             sendAndClearLiftCache();
-            sendAndClearMapCache();
+//            sendAndClearMapCache();
         } else {
             liftRideList.add(liftRide);
-            if(liftRideList.size() >= 1000) {
+            if(liftRideList.size() >= 500) {
                 sendAndClearLiftCache();
             }
-            skierDayCacheAdd(liftRide);
-            if (skierDayCacheMap.size() >= 500) {
-                sendAndClearMapCache();
-            }
+
+//            skierDayCacheAdd(liftRide);
+//            if (skierDayCacheMap.size() >= 250) {
+//                sendAndClearMapCache();
+//            }
         }
     }
 
@@ -60,8 +72,13 @@ public class PostRequestCache {
         if (this.liftRideList.isEmpty()) {
             return;
         }
+
+//        List<LiftRide> cacheLists = new ArrayList<>(liftRideList);
         LiftRideDAO liftRideDAO = new LiftRideDAO();
         liftRideDAO.batchInsert(liftRideList);
+
+        SkierDayInfoDao skierDayInfoDao = new SkierDayInfoDao();
+        skierDayInfoDao.updateAllSkierDayInfo(liftRideList);
         liftRideList.clear();
     }
 
