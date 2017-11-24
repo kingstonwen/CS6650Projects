@@ -5,13 +5,13 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class ResortClientForGet {
-    public static final String TEST_CSV = "test.csv";
-    public static final String DAY1_CSV = "BSDSAssignment2Day1.csv";
+    public static final String TEST_CSV = "/Users/sizhewen/Code/NEU/CS6650/test.csv";
+    public static final String DAY1_CSV = "/Users/sizhewen/Code/NEU/CS6650/BSDSAssignment2Day1.csv";
     public static final String LOCAL_HOST_PROTOCAL = "http://localhost";
     public static final String PORT_NUMBER = "8080";
     public static final String FILE_LOCAL_POST_PATH = "/rest/load";
     public static final String FILE_LOCAL_GET_PATH = "/rest/myvert/";
-    public static final String AWS_EC2_PROTOCAL = "http://35.167.15.233";
+    public static final String AWS_EC2_PROTOCAL = "http://54.201.205.187";
     public static final String FILE_AWS_POST_PATH = "/SkiResort/rest/load";
     public static final String FILE_AWS_GET_PATH = "/SkiResort/rest/myvert/";
 

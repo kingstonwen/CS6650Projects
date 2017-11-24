@@ -49,7 +49,7 @@ public class SkierDayInfo {
         this.numOfLiftRides = numOfLiftRides;
     }
 
-    public void update(Integer vertical) {
+    public synchronized void update(Integer vertical) {
         this.totalVertical += vertical;
         this.numOfLiftRides++;
     }

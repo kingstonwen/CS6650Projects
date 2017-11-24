@@ -26,6 +26,7 @@ public class LiftDataReader {
             String titleLine = csvFile.readLine();
             String line = null;
             while ((line = csvFile.readLine()) != null) {
+//                System.out.println(line);
                 LiftData liftData = createLiftData(line);
                 liftDataList.add(liftData);
             }

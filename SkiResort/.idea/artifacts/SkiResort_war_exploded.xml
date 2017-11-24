@@ -69,6 +69,9 @@
           <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-json-jackson:2.7" />
           <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-moxy:2.7" />
           <element id="library" level="project" name="Maven: org.javassist:javassist:3.18.1-GA" />
+          <element id="library" level="project" name="Maven: com.google.guava:guava:15.0" />
+          <element id="library" level="project" name="Maven: com.jolbox:bonecp:0.8.0.RELEASE" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.2" />
         </element>
       </element>
     </root>

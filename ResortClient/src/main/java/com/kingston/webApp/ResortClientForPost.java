@@ -13,13 +13,15 @@ import java.util.concurrent.*;
 
 public class ResortClientForPost {
 
-    public static final String TEST_CSV = "test.csv";
-    public static final String DAY1_CSV = "BSDSAssignment2Day1.csv";
-    public static final String DAY2_CSV = "BSDSAssignment2Day2.csv";
+    public static final String TEST_CSV = "/Users/sizhewen/Code/NEU/CS6650/test.csv";
+    public static final String DAY1_CSV = "/Users/sizhewen/Code/NEU/CS6650/BSDSAssignment2Day1.csv";
+    public static final String DAY2_CSV = "/Users/sizhewen/Code/NEU/CS6650/BSDSAssignment2Day2.csv";
+    public static final String DAY999_CSV = "/Users/sizhewen/Code/NEU/CS6650/BSDSAssignment2Day999.csv";
+
     public static final String LOCAL_HOST_PROTOCAL = "http://localhost";
     public static final String PORT_NUMBER = "8080";
     public static final String FILE_LOCAL_POST_PATH = "/rest/load";
-    public static final String AWS_EC2_PROTOCAL = "http://35.167.15.233";
+    public static final String AWS_EC2_PROTOCAL = "http://54.201.205.187";
     public static final String FILE_AWS_POST_PATH = "/SkiResort/rest/load";
 
     public static void main(String[] args) throws Exception{
@@ -27,8 +29,8 @@ public class ResortClientForPost {
         String IPAddress = ifTesting ? LOCAL_HOST_PROTOCAL : AWS_EC2_PROTOCAL;
         String postRequestPath = ifTesting ? FILE_LOCAL_POST_PATH : FILE_AWS_POST_PATH;
         String portNum = PORT_NUMBER;
-        int numOfThreads = 150;
-        String importFile = DAY1_CSV;
+        int numOfThreads = 100;
+        String importFile = DAY999_CSV;
 
         LiftDataReader reader = new LiftDataReader(importFile);
         List<LiftData> liftDataList = reader.getList();
@@ -64,15 +66,15 @@ public class ResortClientForPost {
         Long endingTime = System.currentTimeMillis();
 
         //send EOF signal to the server and clear out server cache
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(AWS_EC2_PROTOCAL + ":" + PORT_NUMBER + FILE_AWS_POST_PATH);
-        Response response = webTarget.request().post(Entity.json(new LiftData("0")));
-        if (response != null) {
-            response.close();
-        }
-        if (client != null) {
-            client.close();
-        }
+//        Client client = ClientBuilder.newClient();
+//        WebTarget webTarget = client.target(AWS_EC2_PROTOCAL + ":" + PORT_NUMBER + FILE_AWS_POST_PATH);
+//        Response response = webTarget.request().post(Entity.json(new LiftData("0")));
+//        if (response != null) {
+//            response.close();
+//        }
+//        if (client != null) {
+//            client.close();
+//        }
 
 
 

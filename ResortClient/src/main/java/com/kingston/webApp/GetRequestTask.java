@@ -10,6 +10,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -25,7 +26,7 @@ public class GetRequestTask implements Callable<MetricsOfRequest> {
     private Integer dayNum;
     private MetricsOfRequest metrics;
 
-    private List<SkierDayData> skierDayDataList;
+//    private List<SkierDayData> skierDayDataList;
 
     public GetRequestTask(String ipAddress, String portNum, String requestPath, List<String> skierIDList, Integer dayNum) {
         this.ipAddress = ipAddress;
@@ -34,7 +35,7 @@ public class GetRequestTask implements Callable<MetricsOfRequest> {
         this.skierIDList = skierIDList;
         this.dayNum = dayNum;
         metrics = new MetricsOfRequest();
-        skierDayDataList = Collections.synchronizedList(new ArrayList<>());
+//        skierDayDataList = Collections.synchronizedList(new LinkedList<>());
     }
 
     @Override
@@ -64,7 +65,7 @@ public class GetRequestTask implements Callable<MetricsOfRequest> {
                 Gson gson = new Gson();
                 SkierDayData skierDayData = gson.fromJson(response.readEntity(String.class), SkierDayData.class);
 //                System.out.println(skierDayData.toString());
-                skierDayDataList.add(skierDayData);
+//                skierDayDataList.add(skierDayData);
             }
 
             this.metrics.incrementNumOfRequestSent();

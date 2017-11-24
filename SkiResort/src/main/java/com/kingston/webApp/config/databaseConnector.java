@@ -1,5 +1,8 @@
 package com.kingston.webApp.config;
 
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPConfig;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,6 +17,7 @@ public class DatabaseConnector {
     private final String password = "Wszat4244";
 
     private static DatabaseConnector instance;
+    private BoneCP connectionPool;
 
     public DatabaseConnector() {
     }
@@ -26,23 +30,38 @@ public class DatabaseConnector {
 
     }
 
-    public Connection getConnection() {
-        Connection database = null;
+    private void initializePool() {
         try {
             Class.forName("org.postgresql.Driver");
             try {
                 String url = String.format(urlTemplete, databaseHost, port, databaseName);
-                database = DriverManager.getConnection(url, username, password);
-                if (database != null) {
-                    System.out.println("Connected to the PostgreSQL server successfully.");
-                }
+                BoneCPConfig config = new BoneCPConfig();
+                config.setJdbcUrl(url); // jdbc url specific to your database, eg jdbc:mysql://127.0.0.1/yourdb
+                config.setUsername(username);
+                config.setPassword(password);
+                config.setMinConnectionsPerPartition(5);
+                config.setMaxConnectionsPerPartition(10);
+                config.setPartitionCount(1);
+                connectionPool = new BoneCP(config); // setup the connection pool
+
+//                String url = String.format(urlTemplete, databaseHost, port, databaseName);
+//                database = DriverManager.getConnection(url, username, password);
+//                if (database != null) {
+//                    System.out.println("Connected to the PostgreSQL server successfully.");
+//                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return database;
+    }
+
+    public Connection getConnection() throws SQLException {
+        if (connectionPool == null) {
+            initializePool();
+        }
+        return connectionPool.getConnection();
     }
 
 //    public static void main(String[] args){

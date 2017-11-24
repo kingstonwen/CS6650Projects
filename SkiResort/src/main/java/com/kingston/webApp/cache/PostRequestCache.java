@@ -14,10 +14,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class PostRequestCache {
 
     public static final String END_OF_REQUEST = "0";
+    public static final int CACHE_LIST_UPPER_LIMIT = 100;
+    public static final int INIT_NUM_OF_LIFT_RIDES = 1;
     private static PostRequestCache instance;
 
-//    private List<LiftRide> liftRideList = Collections.synchronizedList(new LinkedList<>());
-    private List<LiftRide> liftRideList = new LinkedList<>();
+    private List<LiftRide> liftRideList = Collections.synchronizedList(new LinkedList<>());
 //    private List<LiftRide> liftRideList = new CopyOnWriteArrayList<>();
 //    private static BlockingQueue<LiftRide> liftRideList = new ArrayBlockingQueue<>(1000);
 
@@ -40,17 +41,11 @@ public class PostRequestCache {
     public synchronized void add(LiftRide liftRide) {
         if (ifEndOfRequestInADay(liftRide)) {
             sendAndClearLiftCache();
-//            sendAndClearMapCache();
         } else {
             liftRideList.add(liftRide);
-            if(liftRideList.size() >= 500) {
+            if(liftRideList.size() >= CACHE_LIST_UPPER_LIMIT) {
                 sendAndClearLiftCache();
             }
-
-//            skierDayCacheAdd(liftRide);
-//            if (skierDayCacheMap.size() >= 250) {
-//                sendAndClearMapCache();
-//            }
         }
     }
 
@@ -61,21 +56,20 @@ public class PostRequestCache {
         int verticalFromLift = LiftRide.getVerticalByLiftId(liftRide.getLiftID());
         if (!this.skierDayCacheMap.containsKey(key)) {
             skierDayCacheMap.put(key,
-                    new SkierDayInfo(skierID, dayNum, verticalFromLift, 1));
+                    new SkierDayInfo(skierID, dayNum, verticalFromLift, INIT_NUM_OF_LIFT_RIDES));
         } else {
             skierDayCacheMap.get(key).update(verticalFromLift);
         }
     }
 
 
-    private void sendAndClearLiftCache() {
+    private synchronized void sendAndClearLiftCache() {
         if (this.liftRideList.isEmpty()) {
             return;
         }
 
-//        List<LiftRide> cacheLists = new ArrayList<>(liftRideList);
         LiftRideDAO liftRideDAO = new LiftRideDAO();
-        liftRideDAO.batchInsert(liftRideList);
+        liftRideDAO.multipleRowsInsert(liftRideList);
 
         SkierDayInfoDao skierDayInfoDao = new SkierDayInfoDao();
         skierDayInfoDao.updateAllSkierDayInfo(liftRideList);

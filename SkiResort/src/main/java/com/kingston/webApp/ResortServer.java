@@ -8,6 +8,7 @@ import com.kingston.webApp.cache.SkierDayCache;
 import com.kingston.webApp.dataEntity.LiftRide;
 import com.kingston.webApp.dataEntity.SkierDayInfo;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -15,8 +16,8 @@ import javax.ws.rs.core.MediaType;
 @Path("/")
 public class ResortServer {
 
-//    @Context
-//    ServletContext servletContext;
+    @Context
+    ServletContext servletContext;
 
     @GET
     @Path("myvert/{skierID}&{dayNum}")
@@ -36,21 +37,22 @@ public class ResortServer {
 //        try {
 //            liftRideDAO.save(liftRide);
 //            skierDayInfoDao.updateSkierDayInfo(liftRide);
-            PostRequestCache.getInstance().add(liftRide);
+//            PostRequestCache.getInstance().add(liftRide);
 //            postRequestCache.add(liftRide);
+        postLiftWithCache(liftRide);
             return liftRide;
 //        } catch (SQLException e) {
 //            e.printStackTrace();
 //        }
     }
 
-//    private LiftRide postLiftWithCache(LiftRide liftRide) {
-//        LiftRideCache liftRideCache = (LiftRideCache) servletContext.getAttribute("LiftRideCache");
-//        liftRideCache.addLift(liftRide);
+    private LiftRide postLiftWithCache(LiftRide liftRide) {
+        LiftRideCache liftRideCache = (LiftRideCache) servletContext.getAttribute("LiftCache");
+        liftRideCache.addLift(liftRide);
 //        SkierDayCache skierDayCache = (SkierDayCache) servletContext.getAttribute("SkierDayCache");
 //        skierDayCache.addLift(liftRide);
-//        return liftRide;
-//    }
+        return liftRide;
+    }
 
     @DELETE
     @Path("lift/deleteAllByDay/{dayNum}")

@@ -7,24 +7,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SkierDayCache {
+    public static final int INIT_NUM_OF_LIFT_RIDES = 1;
     private Map<String, SkierDayInfo> skierDayCacheMap;
 
     public SkierDayCache() {
-        this.skierDayCacheMap = new HashMap<>();
+        this.skierDayCacheMap = new ConcurrentHashMap<>();
     }
 
     public synchronized void addLift(LiftRide liftRide) {
         String skierID = liftRide.getSkierID();
         int dayNum = liftRide.getDayNum();
         String key = "skierid:" + skierID + "daynum:" + dayNum;
-        int verticalFromLift = LiftRide.getVerticalByLiftId(liftRide.getLiftID());
+        int verticalByLift = LiftRide.getVerticalByLiftId(liftRide.getLiftID());
         if (!this.skierDayCacheMap.containsKey(key)) {
             skierDayCacheMap.put(key,
-                    new SkierDayInfo(skierID, dayNum, verticalFromLift, 1));
+                    new SkierDayInfo(skierID, dayNum, verticalByLift, INIT_NUM_OF_LIFT_RIDES));
         } else {
-            skierDayCacheMap.get(key).update(verticalFromLift);
+            skierDayCacheMap.get(key).update(verticalByLift);
         }
     }
 

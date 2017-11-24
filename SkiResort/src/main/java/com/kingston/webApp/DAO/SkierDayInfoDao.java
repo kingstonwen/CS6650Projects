@@ -4,12 +4,15 @@ import com.kingston.webApp.config.DatabaseConnector;
 import com.kingston.webApp.dataEntity.LiftRide;
 import com.kingston.webApp.dataEntity.SkierDayInfo;
 
+import javax.inject.Singleton;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
+//@Singleton
 public class SkierDayInfoDao {
     private static final String GET_VERTICAL_AND_LIFT_NUM =
             "SELECT totalvertical,numoflift FROM skier_day_info WHERE skierid = ? AND daynum = ?" ;
@@ -19,6 +22,11 @@ public class SkierDayInfoDao {
                     "ON CONFLICT (skierid, daynum) DO UPDATE SET\n" +
                     "totalvertical = skier_day_info.totalvertical + EXCLUDED.totalvertical,\n" +
                     "numoflift = skier_day_info.numoflift + EXCLUDED.numoflift";
+
+    private static final String TEST1 = "INSERT INTO skier_day_info(skierid, daynum, totalvertical, numoflift) VALUES";
+    private static final String TEST2 = "ON CONFLICT (skierid, daynum) DO UPDATE SET\n" +
+            "totalvertical = skier_day_info.totalvertical + EXCLUDED.totalvertical,\n" +
+            "numoflift = skier_day_info.numoflift + EXCLUDED.numoflift";
 
     private static final String INSERT =
             "INSERT INTO skier_day_info(skierid, daynum, totalvertical, numoflift) VALUES (?, ?, ?, ?)";
@@ -82,7 +90,46 @@ public class SkierDayInfoDao {
         }
     }
 
-    public void updateAllSkierDayInfo(List<LiftRide> liftRideList) {
+    public void multipleRowsUpdate(List<LiftRide> liftRideList) {
+        try (Connection database = databaseConnector.getConnection()){
+            if (database == null) {
+                throw new SQLException();
+            }
+            PreparedStatement preparedStatement = null;
+            try {
+                int listSize = liftRideList.size();
+                StringBuffer sb = new StringBuffer(TEST1);
+                for(int i = 0; i < listSize; i++) {
+                    sb.append("(?,?,?,?)");
+                    if (i < liftRideList.size()-1) {
+                        sb.append(",");
+                    }
+                }
+                sb.append(TEST2);
+                preparedStatement = database.prepareStatement(sb.toString());
+                int i = 4;
+                for(LiftRide liftRide : liftRideList) {
+                    preparedStatement.setString(i-3, liftRide.getSkierID());
+                    preparedStatement.setInt(i-2, liftRide.getDayNum());
+                    preparedStatement.setInt(i-1, LiftRide.getVerticalByLiftId(liftRide.getLiftID()));
+                    preparedStatement.setInt(i, 1);
+                    i+=4;
+                }
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<LiftRide> updateAllSkierDayInfo(List<LiftRide> liftRideList) {
+        List<LiftRide> updateFailed = new ArrayList<>();
         try (Connection database = databaseConnector.getConnection()){
             if (database == null) {
                 throw new SQLException();
@@ -98,6 +145,11 @@ public class SkierDayInfoDao {
                     preparedStatement.addBatch();
                 }
                 preparedStatement.executeBatch();
+//                for(int i = 0; i < result.length; i++) {
+//                    if (result[i] == PreparedStatement.EXECUTE_FAILED) {
+//                        updateFailed.add(liftRideList.get(i));
+//                    }
+//                }
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
@@ -108,6 +160,7 @@ public class SkierDayInfoDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return updateFailed;
     }
 
     public SkierDayInfo getBySkierIDAndDayNum(String skierID, Integer dayNum) {
